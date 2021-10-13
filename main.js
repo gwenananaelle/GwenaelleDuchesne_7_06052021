@@ -1,18 +1,41 @@
+flattenedRecipes = recipes.map(element => {
+  return flattenObject(Object.values(element)).toString();
+});
+
 window.addEventListener("load", () => {
   const searchInput = document.querySelector("#search");
-  recipes.forEach(recipe => createRecipeCard(recipe));
   searchInput.addEventListener("input", event => {
     let caractersInSearch = event.target.value;
     if (caractersInSearch.length >= 3) {
       SearchRecipe(caractersInSearch);
     }
   });
+  recipes.forEach(recipe => createRecipeCard(recipe));
 });
 
 function SearchRecipe(string) {
-  console.log(`${string}`);
+  const regex = new RegExp(`${string}`, "i");
+  const results = flattenedRecipes.filter(recipe => regex.test(recipe));
+  resetRecipeCards();
+  if (results) {
+    results.forEach(result => {
+      resultIndex = parseInt(result[0], 10) - 1;
+      createRecipeCard(recipes[resultIndex]);
+    });
+  }
 }
 
+function flattenObject(data) {
+  return data.reduce((accumulator, item) => {
+    return accumulator.concat(
+      typeof item === "object" ? flattenObject(Object.values(item)) : item
+    );
+  }, []);
+}
+function resetRecipeCards() {
+  const recipeContainer = document.querySelector(".recipes");
+  recipeContainer.innerHTML = "";
+}
 function createRecipeCard(recipe) {
   const recipeContainer = document.querySelector(".recipes");
   const card = document.createElement("div");

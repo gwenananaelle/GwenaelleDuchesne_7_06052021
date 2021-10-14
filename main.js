@@ -7,13 +7,13 @@ window.addEventListener("load", () => {
   searchInput.addEventListener("input", event => {
     let caractersInSearch = event.target.value;
     if (caractersInSearch.length >= 3) {
-      SearchRecipe(caractersInSearch);
+      searchRecipe(caractersInSearch);
     }
   });
   recipes.forEach(recipe => createRecipeCard(recipe));
 });
 
-function SearchRecipe(string) {
+function searchRecipe(string) {
   const regex = new RegExp(`${string}`, "i");
   const results = flattenedRecipes.filter(recipe => regex.test(recipe));
   resetRecipeCards();

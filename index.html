@@ -57,6 +57,39 @@
           </button>
         </div>
       </form>
+      <input
+        class="btn btn-primary search-by-tag"
+        type="search"
+        name="ingredients"
+        id="dropdownIngredients"
+        list="ingredients-list"
+        aria-label="Ingredients"
+        aria-expanded="false"
+        placeholder="Ingredients"
+      />
+      <datalist id="ingredients-list"> </datalist>
+      <input
+        class="btn btn-success search-by-tag"
+        type="search"
+        name="appliances"
+        id="dropdownAppliances"
+        list="appliances-list"
+        aria-label="appliances"
+        aria-expanded="false"
+        placeholder="appliances"
+      />
+      <datalist id="appliances-list"> </datalist>
+      <input
+        class="btn btn-danger search-by-tag"
+        type="search"
+        name="ustensils"
+        id="dropdownUstensils"
+        list="ustensils-list"
+        aria-label="ustensils"
+        aria-expanded="false"
+        placeholder="ustensils"
+      />
+      <datalist id="ustensils-list"> </datalist>
     </header>
     <main class="container">
       <div class="row row-cols-3 g-5 recipes"></div>

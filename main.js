@@ -1,8 +1,51 @@
-flattenedRecipes = recipes.map(element => {
-  return flattenObject(Object.values(element)).toString();
-});
-
+const recipeList = recipes.map(recipe => new Recipe(recipe));
+let filteredRecipes = [];
+/**
+ * returns a list of all ingredients in an Array of Recipes
+ * @param {Array} list
+ * @returns {Array}
+ */
+function getIngredients(list) {
+  let ingredientList = [];
+  list.forEach(recipe => {
+    recipe.ingredients.forEach(ingredient => {
+      if (!ingredientList.includes(ingredient.ingredient)) {
+        ingredientList.push(ingredient.ingredient);
+      }
+    });
+  });
+  return ingredientList;
+}
+/**
+ * returns a list of all appliances in an Array of Recipes
+ * @param {Array} list
+ * @returns {Array}
+ */
+function getAppliance(list) {
+  let applianceList = [];
+  list.forEach(recipe => {
+    if (!applianceList.includes(recipe.appliance)) {
+      applianceList.push(recipe.appliance);
+    }
+  });
+  return applianceList;
+}
+/**
+ * returns a list of all ustensils in an Array of Recipes
+ * @param {*} list
+ * @returns {Array}
+ */
+function getUstensils(list) {
+  let ustensilsList = [];
+  list.forEach(recipe => ustensilsList.concat(recipe.ustensils));
+  return ustensilsList;
+}
+/**
+ * add onload event that creates cards, set filtered recipe, and add the onInput event for the search
+ */
 window.addEventListener("load", () => {
+  recipeList.forEach(recipe => recipe.createCard());
+  filteredRecipes = recipeList;
   const searchInput = document.querySelector("#search");
   searchInput.addEventListener("input", event => {
     let caractersInSearch = event.target.value;
@@ -10,21 +53,32 @@ window.addEventListener("load", () => {
       searchRecipe(caractersInSearch);
     }
   });
-  recipes.forEach(recipe => createRecipeCard(recipe));
 });
-
-function searchRecipe(string) {
-  const regex = new RegExp(`${string}`, "i");
-  const results = flattenedRecipes.filter(recipe => regex.test(recipe));
-  resetRecipeCards();
-  if (results) {
-    results.forEach(result => {
-      resultIndex = parseInt(result[0], 10) - 1;
-      createRecipeCard(recipes[resultIndex]);
-    });
-  }
+/**
+ * filters filteredRecipes based on input and update content
+ * @param {String} searchInput
+ */
+function searchRecipe(searchInput) {
+  const regex = new RegExp(`${searchInput}`, "i");
+  const results = recipeList.filter(
+    recipe => !regex.test(recipe.searchShortcut)
+  );
+  results.forEach(result =>
+    filteredRecipes.splice(filteredRecipes.indexOf(result), 1)
+  );
+  updateRecipes();
 }
-
+/**
+ * reset and create cards based on filteredRecipes
+ */
+function updateRecipes() {
+  resetRecipeCards();
+  filteredRecipes.forEach(recipe => recipe.createCard());
+}
+/**
+ * creates a single array with all the content from an object and suboject
+ * @param {Array} data
+ */
 function flattenObject(data) {
   return data.reduce((accumulator, item) => {
     return accumulator.concat(
@@ -32,42 +86,10 @@ function flattenObject(data) {
     );
   }, []);
 }
+/**
+ * empty div with class "recipe", deleting all the previously created cards
+ */
 function resetRecipeCards() {
   const recipeContainer = document.querySelector(".recipes");
   recipeContainer.innerHTML = "";
-}
-function createRecipeCard(recipe) {
-  const recipeContainer = document.querySelector(".recipes");
-  const card = document.createElement("div");
-  card.classList.add("col", "h-35");
-  card.innerHTML = `
-<div class="card vh-35" style="height: 364px;">
-${placeholder}
-<div class="card-body h-50 overflow-hidden">
-  <div class="card-title">
-    <h5 class="w-75 d-inline-block text-truncate">${recipe.name}</h5>
-    <strong class="float-end">${clockIcon}10 min</strong>
-  </div>
-  <div class="row card-text">
-    <div class="col">
-      <ul class="ingredient-list-${recipe.id} list-unstyled fs-6">
-      </ul>
-    </div>
-    <div class="col">
-      <p>
-        ${recipe.description}
-      </p>
-    </div>
-  </div>
-</div>
-</div>
-`;
-  recipeContainer.append(card);
-  recipe.ingredients.forEach(ingredient => {
-    const ul = document.querySelector(`.ingredient-list-${recipe.id}`);
-    const li = document.createElement("li");
-    const unit = ingredient.unit || "";
-    li.innerHTML = `<strong>${ingredient.ingredient}:</strong><p>${ingredient.quantity}${unit}</p>`;
-    ul.append(li);
-  });
 }

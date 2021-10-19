@@ -57,39 +57,51 @@
           </button>
         </div>
       </form>
-      <input
-        class="btn btn-primary search-by-tag"
-        type="search"
-        name="ingredients"
-        id="dropdownIngredients"
-        list="ingredients-list"
-        aria-label="Ingredients"
-        aria-expanded="false"
-        placeholder="Ingredients"
-      />
-      <datalist id="ingredients-list"> </datalist>
-      <input
-        class="btn btn-success search-by-tag"
-        type="search"
-        name="appliances"
-        id="dropdownAppliances"
-        list="appliances-list"
-        aria-label="appliances"
-        aria-expanded="false"
-        placeholder="appliances"
-      />
-      <datalist id="appliances-list"> </datalist>
-      <input
-        class="btn btn-danger search-by-tag"
-        type="search"
-        name="ustensils"
-        id="dropdownUstensils"
-        list="ustensils-list"
-        aria-label="ustensils"
-        aria-expanded="false"
-        placeholder="ustensils"
-      />
-      <datalist id="ustensils-list"> </datalist>
+      <div>
+        <ul class="tag-list"></ul>
+      </div>
+      <div class="dropdown">
+        <input
+          class="btn btn-primary dropdown-toggle search-by-tag"
+          type="search"
+          name="ingredients"
+          id="dropdownIngredients"
+          autocomplete="off"
+          aria-label="Ingredients"
+          aria-expanded="false"
+          data-bs-toggle="dropdown"
+          placeholder="Ingredients"
+        />
+        <ul id="ingredients-list" class="dropdown-menu"></ul>
+      </div>
+      <div class="dropdown">
+        <input
+          class="btn btn-success dropdown-toggle search-by-tag"
+          type="search"
+          name="appliances"
+          id="dropdownAppliances"
+          autocomplete="off"
+          aria-label="appliances"
+          aria-expanded="false"
+          data-bs-toggle="dropdown"
+          placeholder="appliances"
+        />
+        <ul id="appliances-list" class="dropdown-menu"></ul>
+      </div>
+      <div class="dropdown">
+        <input
+          class="btn btn-danger dropdown-toggle search-by-tag"
+          type="search"
+          name="ustensils"
+          id="dropdownUstensils"
+          autocomplete="off"
+          aria-label="ustensils"
+          aria-expanded="false"
+          data-bs-toggle="dropdown"
+          placeholder="ustensils"
+        />
+        <ul id="ustensils-list" class="dropdown-menu"></ul>
+      </div>
     </header>
     <main class="container">
       <div class="row row-cols-3 g-5 recipes"></div>

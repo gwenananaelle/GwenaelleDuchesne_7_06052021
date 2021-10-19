@@ -110,14 +110,24 @@ function filterTagSuggestions(searchInput, type) {
  */
 function updateDatalist(results, type) {
   const datalist = document.querySelector(`#${type}-list`);
+  datalist.innerHTML = "";
   if (results) {
     results.forEach(result => {
-      const option = document.createElement("option");
-      option.setAttribute("value", result);
+      const option = document.createElement("li");
+      option.innerText = result;
+      option.addEventListener("click", () => searchTag(result));
       datalist.append(option);
     });
   }
 }
+function searchTag(tag) {
+  const tagList = document.querySelector(".tag-list");
+  const li = document.createElement("li");
+  li.innerHTML = `<span>${tag}<button type="button" class="btn-close" aria-label="Close"></button></span>`;
+  tagList.append(li);
+  searchRecipe(tag);
+}
+
 /**
  * reset and create cards based on filteredRecipes
  */
@@ -151,4 +161,10 @@ function flattenObject(data) {
 function resetRecipeCards() {
   const recipeContainer = document.querySelector(".recipes");
   recipeContainer.innerHTML = "";
+  ingredients = getIngredients(filteredRecipes);
+  appliances = getAppliance(filteredRecipes);
+  ustensils = getUstensils(filteredRecipes);
+  updateDatalist(ingredients, "ingredients");
+  updateDatalist(ustensils, "ustensils");
+  updateDatalist(appliances, "appliances");
 }

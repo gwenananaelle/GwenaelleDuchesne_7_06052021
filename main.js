@@ -4,6 +4,13 @@ let ingredients = getIngredients(filteredRecipes);
 let appliances = getAppliance(filteredRecipes);
 let ustensils = getUstensils(filteredRecipes);
 
+function removeDiacritics(string) {
+  return string.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+function isInArray(str, list) {
+  const regex = new RegExp(`${removeDiacritics(str)}`, "i");
+  return list.find(elm => regex.test(removeDiacritics(elm))) ? true : false;
+}
 /**
  * returns a list of all ingredients in an Array of Recipes
  * @param {Array} list
@@ -13,12 +20,12 @@ function getIngredients(list) {
   let ingredientList = [];
   list.forEach(recipe => {
     recipe.ingredients.forEach(ingredient => {
-      if (!ingredientList.includes(ingredient.ingredient)) {
+      if (!isInArray(ingredient.ingredient, ingredientList)) {
         ingredientList.push(ingredient.ingredient);
       }
     });
   });
-  return ingredientList;
+  return ingredientList.sort();
 }
 /**
  * returns a list of all appliances in an Array of Recipes
@@ -28,11 +35,11 @@ function getIngredients(list) {
 function getAppliance(list) {
   let applianceList = [];
   list.forEach(recipe => {
-    if (!applianceList.includes(recipe.appliance)) {
+    if (!isInArray(recipe.appliance, applianceList)) {
       applianceList.push(recipe.appliance);
     }
   });
-  return applianceList;
+  return applianceList.sort();
 }
 /**
  * returns a list of all ustensils in an Array of Recipes
@@ -41,10 +48,14 @@ function getAppliance(list) {
  */
 function getUstensils(list) {
   let ustensilsList = [];
-  list.forEach(
-    recipe => (ustensilsList = ustensilsList.concat(recipe.ustensils))
-  );
-  return ustensilsList;
+  list.forEach(recipe => {
+    recipe.ustensils.forEach(ustensil => {
+      if (!isInArray(ustensil, ustensilsList)) {
+        ustensilsList.push(ustensil);
+      }
+    });
+  });
+  return ustensilsList.sort();
 }
 /**
  * add onload event that creates cards, set filtered recipe, and add the onInput event for the search

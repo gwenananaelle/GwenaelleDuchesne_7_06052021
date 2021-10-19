@@ -1,6 +1,21 @@
-const recipeList = recipes.map(recipe => new Recipe(recipe));
-let filteredRecipes = recipeList;
+// const recipeList = recipes.map(recipe => new Recipe(recipe));
+let filteredRecipes = recipes.map(recipe => new Recipe(recipe));
+let search = [];
+let tags = [];
 
+/**
+ * creates a single array with all the content from an object and suboject
+ * @param {Array} data
+ */
+function flattenObject(data) {
+  return data.reduce((accumulator, item) => {
+    return accumulator.concat(
+      typeof item === "object"
+        ? flattenObject(Object.values(item))
+        : removeDiacritics(item.toString())
+    );
+  }, []);
+}
 /**
  * remove accents from a string
  * @param {String} string
@@ -61,7 +76,7 @@ function getTagList(tag, list) {
  * add onload event that creates cards, set filtered recipe, and add the onInput event for the search
  */
 window.addEventListener("load", () => {
-  recipeList.forEach(recipe => recipe.createCard());
+  filteredRecipes.forEach(recipe => recipe.createCard());
   let tagsCategories = ["ingredients", "appliances", "ustensils"];
   tagsCategories.forEach(category =>
     updateDatalist(getTagList(category, filteredRecipes), category)
@@ -70,7 +85,11 @@ window.addEventListener("load", () => {
   searchInput.addEventListener("input", event => {
     let caractersInSearch = event.target.value;
     if (caractersInSearch.length >= 3) {
-      searchRecipe(caractersInSearch);
+      let keywords = caractersInSearch.split(" ");
+      search = keywords.map(str => new RegExp(`${removeDiacritics(str)}`, "i"));
+      searchRecipe();
+    } else {
+      search = [];
     }
   });
   const searchByTagInput = document.querySelectorAll(".search-by-tag");
@@ -84,14 +103,20 @@ window.addEventListener("load", () => {
  * filters filteredRecipes based on input and update content
  * @param {String} searchInput
  */
-function searchRecipe(searchInput) {
-  const regex = new RegExp(`${searchInput}`, "i");
-  const results = recipeList.filter(
-    recipe => !regex.test(recipe.searchShortcut)
+function searchRecipe() {
+  filteredRecipes = recipes.map(recipe => new Recipe(recipe));
+  const tagsInRegex = tags.map(
+    str => new RegExp(`${removeDiacritics(str)}`, "i")
   );
-  results.forEach(result =>
-    filteredRecipes.splice(filteredRecipes.indexOf(result), 1)
-  );
+  regexes = search.concat(tagsInRegex);
+  for (let index = 0; index < regexes.length; index++) {
+    if (!filteredRecipes.length > 0) {
+      break;
+    }
+    filteredRecipes = filteredRecipes.filter(recipe =>
+      regexes[index].test(recipe.searchShortcut)
+    );
+  }
   updateRecipes();
 }
 /**
@@ -130,7 +155,7 @@ function updateDatalist(results, type) {
     results.forEach(result => {
       const option = document.createElement("li");
       option.innerText = result;
-      option.addEventListener("click", () => searchTag(result));
+      option.addEventListener("click", () => addSearchTag(result));
       datalist.append(option);
     });
   }
@@ -139,7 +164,7 @@ function updateDatalist(results, type) {
  * add the tag to the list of selected tags
  * @param {String} tag
  */
-function searchTag(tag) {
+function addSearchTag(tag) {
   const tagList = document.querySelector(".tag-list");
   const li = document.createElement("li");
   const span = document.createElement("span");
@@ -148,11 +173,17 @@ function searchTag(tag) {
   button.setAttribute("type", "button");
   button.setAttribute("class", "btn-close");
   button.setAttribute("aria-label", "Close");
-  button.addEventListener("click", event => event.target.parentNode.remove());
+  button.addEventListener("click", event => {
+    console.log(tags.indexOf(event.target.previousSibling.innerText));
+    tags.splice(tags.indexOf(event.target.previousSibling.innerText), 1);
+    searchRecipe();
+    event.target.parentNode.remove();
+  });
   li.append(span);
   li.append(button);
   tagList.append(li);
-  searchRecipe(tag);
+  tags.push(tag);
+  searchRecipe();
 }
 
 /**
@@ -171,17 +202,6 @@ function updateRecipes() {
   }
 }
 
-/**
- * creates a single array with all the content from an object and suboject
- * @param {Array} data
- */
-function flattenObject(data) {
-  return data.reduce((accumulator, item) => {
-    return accumulator.concat(
-      typeof item === "object" ? flattenObject(Object.values(item)) : item
-    );
-  }, []);
-}
 /**
  * empty div with class "recipe", deleting all the previously created cards
  */

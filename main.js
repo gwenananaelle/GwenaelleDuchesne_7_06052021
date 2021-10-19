@@ -1,70 +1,71 @@
 const recipeList = recipes.map(recipe => new Recipe(recipe));
 let filteredRecipes = recipeList;
-let ingredients = getIngredients(filteredRecipes);
-let appliances = getAppliance(filteredRecipes);
-let ustensils = getUstensils(filteredRecipes);
 
+/**
+ * remove accents from a string
+ * @param {String} string
+ * @returns {String}
+ */
 function removeDiacritics(string) {
   return string.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
+/**
+ * check if a String is found in a list
+ * @param {String} str
+ * @param {Array} list
+ * @returns {Boolean}
+ */
 function isInArray(str, list) {
   const regex = new RegExp(`${removeDiacritics(str)}`, "i");
   return list.find(elm => regex.test(removeDiacritics(elm))) ? true : false;
 }
 /**
- * returns a list of all ingredients in an Array of Recipes
+ * get list of ingredients, appliances or ustensils from an array of Recipes
+ * @param {String} tag
  * @param {Array} list
  * @returns {Array}
  */
-function getIngredients(list) {
-  let ingredientList = [];
-  list.forEach(recipe => {
-    recipe.ingredients.forEach(ingredient => {
-      if (!isInArray(ingredient.ingredient, ingredientList)) {
-        ingredientList.push(ingredient.ingredient);
-      }
-    });
-  });
-  return ingredientList.sort();
+function getTagList(tag, list) {
+  let filteredList = [];
+  switch (tag) {
+    case "ingredients":
+      list.forEach(recipe => {
+        recipe.ingredients.forEach(ingredient => {
+          if (!isInArray(ingredient.ingredient, filteredList)) {
+            filteredList.push(ingredient.ingredient);
+          }
+        });
+      });
+      break;
+    case "appliances":
+      list.forEach(recipe => {
+        if (!isInArray(recipe.appliance, filteredList)) {
+          filteredList.push(recipe.appliance);
+        }
+      });
+      break;
+    case "ustensils":
+      list.forEach(recipe => {
+        recipe.ustensils.forEach(ustensil => {
+          if (!isInArray(ustensil, filteredList)) {
+            filteredList.push(ustensil);
+          }
+        });
+      });
+      break;
+  }
+  return filteredList.sort();
 }
-/**
- * returns a list of all appliances in an Array of Recipes
- * @param {Array} list
- * @returns {Array}
- */
-function getAppliance(list) {
-  let applianceList = [];
-  list.forEach(recipe => {
-    if (!isInArray(recipe.appliance, applianceList)) {
-      applianceList.push(recipe.appliance);
-    }
-  });
-  return applianceList.sort();
-}
-/**
- * returns a list of all ustensils in an Array of Recipes
- * @param {*} list
- * @returns {Array}
- */
-function getUstensils(list) {
-  let ustensilsList = [];
-  list.forEach(recipe => {
-    recipe.ustensils.forEach(ustensil => {
-      if (!isInArray(ustensil, ustensilsList)) {
-        ustensilsList.push(ustensil);
-      }
-    });
-  });
-  return ustensilsList.sort();
-}
+
 /**
  * add onload event that creates cards, set filtered recipe, and add the onInput event for the search
  */
 window.addEventListener("load", () => {
   recipeList.forEach(recipe => recipe.createCard());
-  updateDatalist(ingredients, "ingredients");
-  updateDatalist(ustensils, "ustensils");
-  updateDatalist(appliances, "appliances");
+  let tagsCategories = ["ingredients", "appliances", "ustensils"];
+  tagsCategories.forEach(category =>
+    updateDatalist(getTagList(category, filteredRecipes), category)
+  );
   const searchInput = document.querySelector("#search");
   searchInput.addEventListener("input", event => {
     let caractersInSearch = event.target.value;
@@ -103,12 +104,15 @@ function filterTagSuggestions(searchInput, type) {
   let results;
   switch (type) {
     case "ingredients":
+      let ingredients = getTagList("ingredients", filteredRecipes);
       results = ingredients.filter(ingredient => regex.test(ingredient));
       break;
     case "appliances":
+      let appliances = getTagList("appliances", filteredRecipes);
       results = appliances.filter(appliance => regex.test(appliance));
       break;
     case "ustensils":
+      let ustensils = getTagList("ustensils", filteredRecipes);
       results = ustensils.filter(ustensil => regex.test(ustensil));
       break;
   }
@@ -131,10 +135,22 @@ function updateDatalist(results, type) {
     });
   }
 }
+/**
+ * add the tag to the list of selected tags
+ * @param {String} tag
+ */
 function searchTag(tag) {
   const tagList = document.querySelector(".tag-list");
   const li = document.createElement("li");
-  li.innerHTML = `<span>${tag}<button type="button" class="btn-close" aria-label="Close"></button></span>`;
+  const span = document.createElement("span");
+  span.innerText = `${tag}`;
+  const button = document.createElement("button");
+  button.setAttribute("type", "button");
+  button.setAttribute("class", "btn-close");
+  button.setAttribute("aria-label", "Close");
+  button.addEventListener("click", event => event.target.parentNode.remove());
+  li.append(span);
+  li.append(button);
   tagList.append(li);
   searchRecipe(tag);
 }
@@ -172,10 +188,8 @@ function flattenObject(data) {
 function resetRecipeCards() {
   const recipeContainer = document.querySelector(".recipes");
   recipeContainer.innerHTML = "";
-  ingredients = getIngredients(filteredRecipes);
-  appliances = getAppliance(filteredRecipes);
-  ustensils = getUstensils(filteredRecipes);
-  updateDatalist(ingredients, "ingredients");
-  updateDatalist(ustensils, "ustensils");
-  updateDatalist(appliances, "appliances");
+  const tagsCategories = ["ingredients", "appliances", "ustensils"];
+  tagsCategories.forEach(category =>
+    updateDatalist(getTagList(category, filteredRecipes), category)
+  );
 }

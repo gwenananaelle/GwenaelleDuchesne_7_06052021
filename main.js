@@ -81,6 +81,11 @@ window.addEventListener("load", () => {
   tagsCategories.forEach(category =>
     updateDatalist(getTagList(category, filteredRecipes), category)
   );
+  const form = document.querySelector(".form-search");
+  form.addEventListener("submit", event => {
+    event.preventDefault();
+    searchRecipe();
+  });
   const searchInput = document.querySelector("#search");
   searchInput.addEventListener("input", event => {
     let caractersInSearch = event.target.value;

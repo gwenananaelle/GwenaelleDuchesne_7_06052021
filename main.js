@@ -119,7 +119,7 @@ function searchRecipe() {
   );
   regexes = search.concat(tagsInRegex);
   for (let index = 0; index < regexes.length; index++) {
-    if (!filteredRecipes.length > 0) {
+    if (filteredRecipes.length === 0) {
       break;
     }
     filteredRecipes = filteredRecipes.filter(recipe =>

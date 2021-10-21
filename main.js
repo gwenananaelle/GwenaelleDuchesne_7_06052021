@@ -102,6 +102,7 @@ window.addEventListener("load", () => {
       searchRecipe();
     } else {
       search = [];
+      searchRecipe();
     }
   });
   //add dropdown events

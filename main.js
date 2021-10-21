@@ -15,8 +15,11 @@ function flattenObject(data) {
     );
   }, []);
 }
+function removeNonAlphabeticalCharacters(string) {
+  return string.replace(/[^A-zÀ-ú\s]/g, "");
+}
 /**
- * remove accents from a string
+ * remove non letter characters and accents from a string
  * @param {String} string
  * @returns {String}
  */

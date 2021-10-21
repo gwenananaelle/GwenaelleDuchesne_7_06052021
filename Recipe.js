@@ -1,13 +1,17 @@
 class Recipe {
   constructor(recipe) {
     this.id = recipe.id;
-    this.name = recipe.name;
-    this.servings = recipe.servings;
-    this.ingredients = recipe.ingredients;
-    this.time = recipe.time;
+    this.name = removeNonAlphabeticalCharacters(recipe.name);
+    this.servings = parseInt(recipe.servings, 10);
+    this.ingredients = recipe.ingredients.map(
+      ingredient => new Ingredient(ingredient)
+    );
+    this.time = parseInt(recipe.time, 10);
     this.description = recipe.description;
-    this.appliance = recipe.appliance;
-    this.ustensils = recipe.ustensils;
+    this.appliance = removeNonAlphabeticalCharacters(recipe.appliance);
+    this.ustensils = recipe.ustensils.map(ustensil =>
+      removeNonAlphabeticalCharacters(ustensil)
+    );
     this.searchShortcut = flattenObject(Object.values(recipe)).toString();
     this.createCard = function() {
       const recipeContainer = document.querySelector(".recipes");

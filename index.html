@@ -62,17 +62,23 @@
       <div>
         <ul class="tag-list  p-0"></ul>
       </div>
-      <div id="ingredients-dropdown" class="dropdown-custom bg-primary-custom">
+      <div
+        id="ingredients-dropdown"
+        data-type="ingredients"
+        class="dropdown-custom bg-primary-custom"
+      >
         <input
           class="search-by-tag"
           type="text"
           name="ingredients"
+          data-type="ingredients"
           id="dropdownIngredients"
           autocomplete="off"
           placeholder="Ingredients"
         />
         <button
           type="button"
+          data-type="ingredients"
           id="ingredients-toggle"
           class="btn dropdown-toggle-custom"
         >
@@ -92,20 +98,27 @@
         </button>
         <ul
           id="ingredients-list"
+          data-type="ingredients"
           class="dropdown-menu-custom bg-primary-custom"
         ></ul>
       </div>
-      <div id="appliances-dropdown" class="dropdown-custom bg-secondary-custom">
+      <div
+        id="appliances-dropdown"
+        data-type="appliances"
+        class="dropdown-custom bg-secondary-custom"
+      >
         <input
           class="search-by-tag"
           type="text"
           name="appliances"
+          data-type="appliances"
           id="dropdownAppliances"
           autocomplete="off"
           placeholder="Appliances"
         />
         <button
           type="button"
+          data-type="appliances"
           id="appliances-toggle"
           class="btn dropdown-toggle-custom"
         >
@@ -125,20 +138,27 @@
         </button>
         <ul
           id="appliances-list"
+          data-type="appliances"
           class="dropdown-menu-custom bg-secondary-custom"
         ></ul>
       </div>
-      <div id="ustensils-dropdown" class="dropdown-custom bg-tertiary-custom">
+      <div
+        id="ustensils-dropdown"
+        data-type="ustensils"
+        class="dropdown-custom bg-tertiary-custom"
+      >
         <input
           class="search-by-tag"
           type="text"
           name="ustensils"
+          data-type="ustensils"
           id="dropdownUstensils"
           autocomplete="off"
           placeholder="Ustensils"
         />
         <button
           type="button"
+          data-type="ustensils"
           id="ustensils-toggle"
           class="btn dropdown-toggle-custom"
         >
@@ -158,6 +178,7 @@
         </button>
         <ul
           id="ustensils-list"
+          data-type="ustensils"
           class="dropdown-menu-custom bg-tertiary-custom"
         ></ul>
       </div>

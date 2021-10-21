@@ -75,17 +75,21 @@ function getTagList(tag, list) {
  * add onload event that creates cards, set filtered recipe, and add the onInput event for the search
  */
 window.addEventListener("load", () => {
+  //create cards
   filteredRecipes.forEach(recipe => recipe.createCard());
   ellipsizeTextElement(".multiline-text-troncated");
+  //create dropdown lists
   let tagsCategories = ["ingredients", "appliances", "ustensils"];
   tagsCategories.forEach(category =>
     updateDatalist(getTagList(category, filteredRecipes), category)
   );
+  //submit event for search
   const form = document.querySelector(".form-search");
   form.addEventListener("submit", event => {
     event.preventDefault();
     searchRecipe();
   });
+  //add input event for search
   const searchInput = document.querySelector("#search");
   searchInput.addEventListener("input", event => {
     let caractersInSearch = event.target.value;
@@ -97,38 +101,8 @@ window.addEventListener("load", () => {
       search = [];
     }
   });
-  document.querySelectorAll(".dropdown-toggle-custom").forEach(elm => {
-    elm.addEventListener("click", event => {
-      event.target.closest(".dropdown-custom").classList.toggle("show");
-    });
-  });
-
-  const searchByTagInput = document.querySelectorAll(".search-by-tag");
-  searchByTagInput.forEach(input => {
-    input.addEventListener("input", event => {
-      filterTagSuggestions(event.target.value, input.name);
-    });
-    input.addEventListener(
-      "focus",
-      event => {
-        input.setAttribute("placeholder", "Recherche un ingédient");
-        if (
-          !event.target.closest(".dropdown-custom").classList.contains("show")
-        ) {
-          event.target.closest(".dropdown-custom").classList.add("show");
-        }
-      },
-      true
-    );
-    input.addEventListener(
-      "blur",
-      event => {
-        event.target.closest(".dropdown-custom").classList.remove("show");
-        input.setAttribute("placeholder", input.name);
-      },
-      true
-    );
-  });
+  //add dropdown events
+  addDropdownToggleEvents();
 });
 /**
  * filters filteredRecipes based on input and update content
@@ -256,4 +230,46 @@ function ellipsizeTextElement(element) {
       element.innerHTML = wordArray.join(" ") + "...";
     }
   });
+}
+/**
+ * add events to show dropdown list for click toggle button, focus, and blur
+ */
+function addDropdownToggleEvents() {
+  document.querySelectorAll(".dropdown-toggle-custom").forEach(elm => {
+    const type = elm.dataset.type;
+    const dropdown = document.querySelector(`#${type}-dropdown`);
+    elm.addEventListener("click", () => {
+      if (dropdown.classList.contains("show")) {
+        dropdown.classList.remove("show");
+      } else {
+        closeAllDropdowns();
+        dropdown.classList.add("show");
+      }
+    });
+  });
+
+  const searchByTagInput = document.querySelectorAll(".search-by-tag");
+  searchByTagInput.forEach(input => {
+    const type = input.dataset.type;
+    const dropdown = document.querySelector(`#${type}-dropdown`);
+    input.addEventListener("input", event => {
+      filterTagSuggestions(event.target.value, type);
+    });
+    input.addEventListener("focus", () => {
+      input.setAttribute("placeholder", "Recherche un ingédient");
+      if (!dropdown.classList.contains("show")) {
+        closeAllDropdowns();
+        dropdown.classList.add("show");
+      }
+    });
+    input.addEventListener("blur", () => {
+      dropdown.classList.remove("show");
+      input.setAttribute("placeholder", type);
+    });
+  });
+}
+
+function closeAllDropdowns() {
+  openedDropdowns = document.querySelectorAll(".show");
+  openedDropdowns.forEach(dropdown => dropdown.classList.remove("show"));
 }

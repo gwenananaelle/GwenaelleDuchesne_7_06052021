@@ -39,8 +39,9 @@ class Recipe {
       recipe.ingredients.forEach(ingredient => {
         const ul = document.querySelector(`.ingredient-list-${recipe.id}`);
         const li = document.createElement("li");
+        const quantity = ingredient.quantity ? `: ${ingredient.quantity}` : "";
         const unit = ingredient.unit || "";
-        li.innerHTML = `<strong>${ingredient.ingredient}:</strong><p>${ingredient.quantity}${unit}</p>`;
+        li.innerHTML = `<strong>${ingredient.ingredient}</strong><p>${quantity}${unit}</p>`;
         ul.append(li);
       });
     };

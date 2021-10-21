@@ -1,5 +1,4 @@
 let filteredRecipes = recipes.map(recipe => new Recipe(recipe));
-let search = [];
 let tags = [];
 
 /**
@@ -97,12 +96,10 @@ window.addEventListener("load", () => {
   searchInput.addEventListener("input", event => {
     let caractersInSearch = event.target.value;
     if (caractersInSearch.length >= 3) {
-      let keywords = caractersInSearch.split(" ");
-      search = keywords.map(str => new RegExp(`${removeDiacritics(str)}`, "i"));
-      searchRecipe();
+      searchRecipe(caractersInSearch);
     } else {
-      search = [];
-      searchRecipe();
+      filteredRecipes = recipes.map(recipe => new Recipe(recipe));
+      updateRecipes();
     }
   });
   //add dropdown events
@@ -112,22 +109,46 @@ window.addEventListener("load", () => {
 /**
  * filters filteredRecipes based on input and update content
  */
-function searchRecipe() {
-  filteredRecipes = recipes.map(recipe => new Recipe(recipe));
-  const tagsInRegex = tags.map(
-    str => new RegExp(`${removeDiacritics(str)}`, "i")
-  );
-  regexes = search.concat(tagsInRegex);
-  for (let index = 0; index < regexes.length; index++) {
-    if (!filteredRecipes.length > 0) {
-      break;
-    }
-    filteredRecipes = filteredRecipes.filter(recipe =>
-      regexes[index].test(recipe.searchShortcut)
-    );
+function searchRecipe(caractersInSearch) {
+  filteredRecipes = [];
+  for (let index = 0; index < recipes.length; index++) {
+    const recipe = recipes[index];
+    filteredRecipes[filteredRecipes.length] = new Recipe(recipe);
   }
+
+  let keywords = caractersInSearch ? caractersInSearch.split(" ") : "";
+  const search = stringToRegex(keywords);
+  filteredRecipes = filterArray(search);
+  // const tagsInRegex = stringToRegex(tags);
+  // filterArray(tagsInRegex);
+
   updateRecipes();
 }
+function filterArray(regexes) {
+  matchingRecipes = [];
+  for (let index = 0; index < regexes.length; index++) {
+    if (filteredRecipes.length === 0) {
+      break;
+    }
+    const regex = regexes[index];
+    for (let index = 0; index < filteredRecipes.length; index++) {
+      const recipe = filteredRecipes[index];
+      if (regex.test(recipe.searchShortcut)) {
+        matchingRecipes[matchingRecipes.length] = recipe;
+      }
+    }
+  }
+  return matchingRecipes;
+}
+function stringToRegex(strings) {
+  let strInRegex = [];
+  for (let index = 0; index < strings.length; index++) {
+    const str = strings[index];
+    strInRegex.push(new RegExp(`${removeDiacritics(str)}`, "i"));
+  }
+  return strInRegex;
+}
+
 /**
  * filter tag suggestions based on searchInput
  * @param {String} searchInput
@@ -214,7 +235,6 @@ function updateRecipes() {
   }
   ellipsizeTextElement(".multiline-text-troncated");
 }
-
 /**
  * empty div with class "recipe", deleting all the previously created cards
  */

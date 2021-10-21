@@ -103,6 +103,7 @@ window.addEventListener("load", () => {
   });
   //add dropdown events
   addDropdownToggleEvents();
+  addTagEvent();
 });
 /**
  * filters filteredRecipes based on input and update content
@@ -162,7 +163,7 @@ function updateDatalist(results, type) {
     results.forEach(result => {
       const option = document.createElement("li");
       option.innerText = result;
-      option.addEventListener("mousedown", () => addSearchTag(result, type));
+      option.setAttribute("data-type", type);
       datalist.append(option);
     });
   }
@@ -179,10 +180,11 @@ function addSearchTag(tag, type) {
   <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
   <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
 </svg>`;
-  li.lastChild.addEventListener("click", event => {
-    let tagElm = event.target.closest(".tag");
-    if (tags.indexOf(tagElm.innerText) !== -1) {
-      tags.splice(tags.indexOf(tagElm.innerText), 1);
+  li.addEventListener("click", () => {
+    const tagElm = li;
+    const index = tags.indexOf(tagElm.innerText);
+    if (index !== -1) {
+      tags.splice(index, 1);
       tagElm.remove();
       searchRecipe();
     }
@@ -247,7 +249,6 @@ function addDropdownToggleEvents() {
       }
     });
   });
-
   const searchByTagInput = document.querySelectorAll(".search-by-tag");
   searchByTagInput.forEach(input => {
     const type = input.dataset.type;
@@ -263,13 +264,34 @@ function addDropdownToggleEvents() {
       }
     });
     input.addEventListener("blur", () => {
-      dropdown.classList.remove("show");
-      input.setAttribute("placeholder", type);
+      if (!event.target.matches("li")) {
+        dropdown.classList.remove("show");
+        input.setAttribute("placeholder", type);
+      }
     });
   });
 }
-
+/**
+ * remove class "show" for all dropdowns
+ */
 function closeAllDropdowns() {
   openedDropdowns = document.querySelectorAll(".show");
   openedDropdowns.forEach(dropdown => dropdown.classList.remove("show"));
+}
+/**
+ * add event for the tag list that triggers tag creation
+ */
+function addTagEvent() {
+  const datalists = document.querySelectorAll(`.dropdown-menu-custom`);
+  datalists.forEach(datalist => {
+    datalist.addEventListener("mousedown", event => {
+      if (
+        event.target.matches("li") &&
+        event.target.innerText &&
+        event.target.dataset.type
+      ) {
+        addSearchTag(event.target.innerText, event.target.dataset.type);
+      }
+    });
+  });
 }

@@ -18,6 +18,7 @@
       crossorigin="anonymous"
     ></script>
     <!-- my css and script -->
+    <link rel="stylesheet" href="style.css" />
     <script src="recipes.js"></script>
     <script src="Recipe.js"></script>
     <script src="svg.js"></script>
@@ -29,12 +30,13 @@
       <a href="index.html" class="">
         <img src="logo.svg" alt="" class="img-fluid mx-auto d-block" />
       </a>
-      <h1 class="text-center text-danger">Les Petits Plats</h1>
+      <h1 class="text-center text-logo-custom">Les Petits Plats</h1>
       <form class="form-search">
         <div class="input-group my-3">
           <input
             id="search"
             type="text"
+            autocomplete="off"
             class="form-control bg-secondary bg-opacity-10 border-0"
             placeholder="Rechercher un ingrédient, appareil, ustensiles ou une recette"
           />
@@ -58,49 +60,106 @@
         </div>
       </form>
       <div>
-        <ul class="tag-list"></ul>
+        <ul class="tag-list  p-0"></ul>
       </div>
-      <div class="dropdown">
+      <div id="ingredients-dropdown" class="dropdown-custom bg-primary-custom">
         <input
-          class="btn btn-primary dropdown-toggle search-by-tag"
-          type="search"
+          class="search-by-tag"
+          type="text"
           name="ingredients"
           id="dropdownIngredients"
           autocomplete="off"
-          aria-label="Ingredients"
-          aria-expanded="false"
-          data-bs-toggle="dropdown"
           placeholder="Ingredients"
         />
-        <ul id="ingredients-list" class="dropdown-menu"></ul>
+        <button
+          type="button"
+          id="ingredients-toggle"
+          class="btn dropdown-toggle-custom"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-chevron-down"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
+            />
+          </svg>
+        </button>
+        <ul
+          id="ingredients-list"
+          class="dropdown-menu-custom bg-primary-custom"
+        ></ul>
       </div>
-      <div class="dropdown">
+      <div id="appliances-dropdown" class="dropdown-custom bg-secondary-custom">
         <input
-          class="btn btn-success dropdown-toggle search-by-tag"
-          type="search"
+          class="search-by-tag"
+          type="text"
           name="appliances"
           id="dropdownAppliances"
           autocomplete="off"
-          aria-label="appliances"
-          aria-expanded="false"
-          data-bs-toggle="dropdown"
-          placeholder="appliances"
+          placeholder="Appliances"
         />
-        <ul id="appliances-list" class="dropdown-menu"></ul>
+        <button
+          type="button"
+          id="appliances-toggle"
+          class="btn dropdown-toggle-custom"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-chevron-down"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
+            />
+          </svg>
+        </button>
+        <ul
+          id="appliances-list"
+          class="dropdown-menu-custom bg-secondary-custom"
+        ></ul>
       </div>
-      <div class="dropdown">
+      <div id="ustensils-dropdown" class="dropdown-custom bg-tertiary-custom">
         <input
-          class="btn btn-danger dropdown-toggle search-by-tag"
-          type="search"
+          class="search-by-tag"
+          type="text"
           name="ustensils"
           id="dropdownUstensils"
           autocomplete="off"
-          aria-label="ustensils"
-          aria-expanded="false"
-          data-bs-toggle="dropdown"
-          placeholder="ustensils"
+          placeholder="Ustensils"
         />
-        <ul id="ustensils-list" class="dropdown-menu"></ul>
+        <button
+          type="button"
+          id="ustensils-toggle"
+          class="btn dropdown-toggle-custom"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-chevron-down"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
+            />
+          </svg>
+        </button>
+        <ul
+          id="ustensils-list"
+          class="dropdown-menu-custom bg-tertiary-custom"
+        ></ul>
       </div>
     </header>
     <main class="container">

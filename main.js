@@ -1,4 +1,3 @@
-// const recipeList = recipes.map(recipe => new Recipe(recipe));
 let filteredRecipes = recipes.map(recipe => new Recipe(recipe));
 let search = [];
 let tags = [];
@@ -98,16 +97,41 @@ window.addEventListener("load", () => {
       search = [];
     }
   });
+  document.querySelectorAll(".dropdown-toggle-custom").forEach(elm => {
+    elm.addEventListener("click", event => {
+      event.target.closest(".dropdown-custom").classList.toggle("show");
+    });
+  });
+
   const searchByTagInput = document.querySelectorAll(".search-by-tag");
   searchByTagInput.forEach(input => {
     input.addEventListener("input", event => {
       filterTagSuggestions(event.target.value, input.name);
     });
+    input.addEventListener(
+      "focus",
+      event => {
+        input.setAttribute("placeholder", "Recherche un ingédient");
+        if (
+          !event.target.closest(".dropdown-custom").classList.contains("show")
+        ) {
+          event.target.closest(".dropdown-custom").classList.add("show");
+        }
+      },
+      true
+    );
+    input.addEventListener(
+      "blur",
+      event => {
+        event.target.closest(".dropdown-custom").classList.remove("show");
+        input.setAttribute("placeholder", input.name);
+      },
+      true
+    );
   });
 });
 /**
  * filters filteredRecipes based on input and update content
- * @param {String} searchInput
  */
 function searchRecipe() {
   filteredRecipes = recipes.map(recipe => new Recipe(recipe));
@@ -155,13 +179,16 @@ function filterTagSuggestions(searchInput, type) {
  * @param {String} type
  */
 function updateDatalist(results, type) {
+  const dropdown = document.querySelector(`#${type}-dropdown`);
+  dropdown.setAttribute("data-length", results.length);
   const datalist = document.querySelector(`#${type}-list`);
+  datalist.setAttribute("data-length", results.length);
   datalist.innerHTML = "";
   if (results) {
     results.forEach(result => {
       const option = document.createElement("li");
       option.innerText = result;
-      option.addEventListener("click", () => addSearchTag(result));
+      option.addEventListener("mousedown", () => addSearchTag(result, type));
       datalist.append(option);
     });
   }
@@ -170,23 +197,22 @@ function updateDatalist(results, type) {
  * add the tag to the list of selected tags
  * @param {String} tag
  */
-function addSearchTag(tag) {
+function addSearchTag(tag, type) {
   const tagList = document.querySelector(".tag-list");
   const li = document.createElement("li");
-  const span = document.createElement("span");
-  span.innerText = `${tag}`;
-  const button = document.createElement("button");
-  button.setAttribute("type", "button");
-  button.setAttribute("class", "btn-close");
-  button.setAttribute("aria-label", "Close");
-  button.addEventListener("click", event => {
-    console.log(tags.indexOf(event.target.previousSibling.innerText));
-    tags.splice(tags.indexOf(event.target.previousSibling.innerText), 1);
-    searchRecipe();
-    event.target.parentNode.remove();
+  li.classList.add("tag", type, "d-inline-block", "my-3", "me-1");
+  li.innerHTML = `${tag}<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+</svg>`;
+  li.lastChild.addEventListener("click", event => {
+    let tagElm = event.target.closest(".tag");
+    if (tags.indexOf(tagElm.innerText) !== -1) {
+      tags.splice(tags.indexOf(tagElm.innerText), 1);
+      tagElm.remove();
+      searchRecipe();
+    }
   });
-  li.append(span);
-  li.append(button);
   tagList.append(li);
   tags.push(tag);
   searchRecipe();

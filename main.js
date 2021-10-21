@@ -77,6 +77,7 @@ function getTagList(tag, list) {
  */
 window.addEventListener("load", () => {
   filteredRecipes.forEach(recipe => recipe.createCard());
+  ellipsizeTextElement(".multiline-text-troncated");
   let tagsCategories = ["ingredients", "appliances", "ustensils"];
   tagsCategories.forEach(category =>
     updateDatalist(getTagList(category, filteredRecipes), category)
@@ -205,6 +206,7 @@ function updateRecipes() {
   } else {
     filteredRecipes.forEach(recipe => recipe.createCard());
   }
+  ellipsizeTextElement(".multiline-text-troncated");
 }
 
 /**
@@ -217,4 +219,15 @@ function resetRecipeCards() {
   tagsCategories.forEach(category =>
     updateDatalist(getTagList(category, filteredRecipes), category)
   );
+}
+function ellipsizeTextElement(element) {
+  var nodeList = document.querySelectorAll(element);
+  var elements = Array.prototype.slice.call(nodeList, 0);
+  elements.forEach(function(element) {
+    var wordArray = element.innerHTML.split(" ");
+    while (element.scrollHeight > element.offsetHeight) {
+      wordArray.pop();
+      element.innerHTML = wordArray.join(" ") + "...";
+    }
+  });
 }

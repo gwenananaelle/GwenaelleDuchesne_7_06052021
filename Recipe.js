@@ -27,7 +27,7 @@ class Recipe {
             </ul>
           </div>
           <div class="col">
-            <p>
+            <p class="multiline-text-troncated">
               ${recipe.description}
             </p>
           </div>

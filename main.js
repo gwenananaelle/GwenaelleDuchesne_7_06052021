@@ -1,6 +1,5 @@
 const recipeWithShortcuts = recipes.map(recipe => new Recipe(recipe));
 let filteredRecipes = recipeWithShortcuts;
-let search = [];
 let tags = [];
 
 /**
@@ -95,16 +94,8 @@ window.addEventListener("load", () => {
   });
   //add input event for search
   const searchInput = document.querySelector("#search");
-  searchInput.addEventListener("input", event => {
-    let caractersInSearch = event.target.value;
-    if (caractersInSearch.length >= 3) {
-      let keywords = caractersInSearch.split(" ");
-      search = keywords.map(str => new RegExp(`${removeDiacritics(str)}`, "i"));
-      searchRecipe();
-    } else {
-      search = [];
-      searchRecipe();
-    }
+  searchInput.addEventListener("input", () => {
+    searchRecipe();
   });
   //add dropdown events
   addDropdownToggleEvents();
@@ -114,7 +105,16 @@ window.addEventListener("load", () => {
  * filters filteredRecipes based on input and update content
  */
 function searchRecipe() {
+  const searchInput = document.querySelector("#search");
   filteredRecipes = recipeWithShortcuts;
+  let search = [];
+  if (searchInput.value.length >= 3) {
+    console.log("search input it more than 3");
+
+    let caractersInSearch = searchInput.value;
+    let keywords = caractersInSearch.split(" ");
+    search = keywords.map(str => new RegExp(`${removeDiacritics(str)}`, "i"));
+  }
   const tagsInRegex = tags.map(
     str => new RegExp(`${removeDiacritics(str)}`, "i")
   );

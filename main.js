@@ -1,4 +1,5 @@
-let filteredRecipes = recipes.map(recipe => new Recipe(recipe));
+const recipeWithShortcuts = recipes.map(recipe => new Recipe(recipe));
+let filteredRecipes = recipeWithShortcuts;
 let search = [];
 let tags = [];
 
@@ -79,12 +80,12 @@ function getTagList(tag, list) {
  */
 window.addEventListener("load", () => {
   //create cards
-  filteredRecipes.forEach(recipe => recipe.createCard());
+  recipeWithShortcuts.forEach(recipe => recipe.createCard());
   ellipsizeTextElement(".multiline-text-troncated");
   //create dropdown lists
   let tagsCategories = ["ingredients", "appliances", "ustensils"];
   tagsCategories.forEach(category =>
-    updateDatalist(getTagList(category, filteredRecipes), category)
+    updateDatalist(getTagList(category, recipeWithShortcuts), category)
   );
   //submit event for search
   const form = document.querySelector(".form-search");
@@ -113,7 +114,7 @@ window.addEventListener("load", () => {
  * filters filteredRecipes based on input and update content
  */
 function searchRecipe() {
-  filteredRecipes = recipes.map(recipe => new Recipe(recipe));
+  filteredRecipes = recipeWithShortcuts;
   const tagsInRegex = tags.map(
     str => new RegExp(`${removeDiacritics(str)}`, "i")
   );

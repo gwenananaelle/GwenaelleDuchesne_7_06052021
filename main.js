@@ -109,8 +109,6 @@ function searchRecipe() {
   filteredRecipes = recipeWithShortcuts;
   let search = [];
   if (searchInput.value.length >= 3) {
-    console.log("search input it more than 3");
-
     let caractersInSearch = searchInput.value;
     let keywords = caractersInSearch.split(" ");
     search = keywords.map(str => new RegExp(`${removeDiacritics(str)}`, "i"));
